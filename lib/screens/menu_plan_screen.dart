@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../models/recipe.dart'; // Adjust the import path according to your project structure
+import 'package:provider/provider.dart'; // Add this import at the top of your file
+import '../providers/cart_provider.dart';
 
 class MenuPlanScreen extends StatefulWidget {
   @override
@@ -125,7 +127,12 @@ class MealDayCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(mealType, style: TextStyle(fontWeight: FontWeight.bold)),
-                ...meals[mealType]!.map((recipe) => Text("• ${recipe.title}")).toList(),
+                ...meals[mealType]!.map((recipe) => ListTile(
+                  leading: recipe.imageUrl != null
+                      ? Image.network(recipe.imageUrl!, width: 50, height: 50, fit: BoxFit.cover)
+                      : Icon(Icons.fastfood),
+                  title: Text("• ${recipe.title}"),
+                )).toList(),
                 TextButton(
                   onPressed: () {
                     // Show meal selection dialog
@@ -170,11 +177,17 @@ class MealSelectionSheet extends StatelessWidget {
               itemBuilder: (context, index) {
                 final recipe = recipes[index]; // Replace `recipes` with your actual data source
                 return ListTile(
+                  leading: recipe.imageUrl != null
+                      ? Image.network(recipe.imageUrl!, width: 50, height: 50, fit: BoxFit.cover)
+                      : Icon(Icons.fastfood),
                   title: Text(recipe.title),
                   trailing: IconButton(
                     icon: Icon(Icons.add, color: Colors.green),
                     onPressed: () {
                       onAddMeal(day, mealType, recipe);
+                      // Add ingredients to the cart
+                      final cartProvider = Provider.of<CartProvider>(context, listen: false);
+                      cartProvider.addToCart(recipe); // Store ingredients in the cart
                       Navigator.pop(context); // Close the bottom sheet
                     },
                   ),
