@@ -1,30 +1,37 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:projects/main.dart';
+import 'package:projects/screens/menu_plan_screen.dart'; // Import your MenuPlanScreen widget here
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('MenuPlanScreen widget test', (WidgetTester tester) async {
+    // Build the MenuPlanScreen widget
+    await tester.pumpWidget(MaterialApp(home: MenuPlanScreen()));
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    // Verify that the app bar with title "Meal Plan" is visible
+    expect(find.byType(AppBar), findsOneWidget);
+    expect(find.text('Meal Plan'), findsOneWidget);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    // Verify that the week navigation controls are present
+    expect(find.byIcon(Icons.arrow_back), findsOneWidget);
+    expect(find.byIcon(Icons.arrow_forward), findsOneWidget);
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // Verify the week range is displayed
+    expect(find.textContaining('Feb 3 - Feb 9'), findsOneWidget); // Adjust based on your initial start date
+
+    // Check that the meal plan cards are displayed for each day of the week
+    expect(find.text('Monday'), findsOneWidget);
+    expect(find.text('Tuesday'), findsOneWidget);
+    expect(find.text('Wednesday'), findsOneWidget);
+    expect(find.text('Thursday'), findsOneWidget);
+    expect(find.text('Friday'), findsOneWidget);
+    expect(find.text('Saturday'), findsOneWidget);
+    expect(find.text('Sunday'), findsOneWidget);
+
+    // Tap the "Add Meal" button and verify that the bottom sheet opens
+    await tester.tap(find.text('+ Add Meal').first); // Tapping the first "Add Meal"
+    await tester.pumpAndSettle();
+
+    // Verify that the meal selection bottom sheet is displayed
+    expect(find.byType(MealSelectionSheet), findsOneWidget);
   });
 }

@@ -1,26 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../models/recipe.dart';
+import '../providers/cart_provider.dart';
 
 class CartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final List<Recipe> selectedRecipes = Provider.of<List<Recipe>>(context);
-
-    List<String> getShoppingList() {
-      List<String> list = [];
-      selectedRecipes.forEach((recipe) {
-        list.addAll(recipe.ingredients);
-      });
-      return list.toSet().toList();
-    }
+    final cart = Provider.of<CartProvider>(context);
 
     return Scaffold(
       appBar: AppBar(title: Text('Shopping List')),
-      body: ListView.builder(
-        itemCount: getShoppingList().length,
+      body: cart.shoppingList.isEmpty
+          ? Center(child: Text('No items in the shopping list'))
+          : ListView.builder(
+        itemCount: cart.shoppingList.length,
         itemBuilder: (context, index) {
-          return ListTile(title: Text(getShoppingList()[index]));
+          return ListTile(
+            title: Text(cart.shoppingList[index]), // Display food name
+            trailing: IconButton(
+              icon: Icon(Icons.delete),
+              onPressed: () {
+                cart.removeFromCart(cart.shoppingList[index]);
+              },
+            ),
+          );
         },
       ),
     );

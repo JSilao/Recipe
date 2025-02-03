@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../models/recipe.dart';
+import '../providers/cart_provider.dart';
 
 class RecipeDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final String? recipeId = ModalRoute.of(context)?.settings.arguments as String?;
 
-    // Handle the case when recipeId is null
     if (recipeId == null) {
       return Scaffold(
         body: Center(child: Text('Recipe not found')),
@@ -20,6 +21,7 @@ class RecipeDetailsScreen extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Cuisine: ${recipe.cuisine}'),
             Text('Meal Type: ${recipe.mealType}'),
@@ -28,11 +30,15 @@ class RecipeDetailsScreen extends StatelessWidget {
             Text('Ingredients: ${recipe.ingredients.join(', ')}'),
             SizedBox(height: 16),
             Text('Instructions: ${recipe.instructions}'),
+            SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                // Add logic for saving to favorites
+                Provider.of<CartProvider>(context, listen: false).addToCart(recipe);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('${recipe.title} added to cart!')),
+                );
               },
-              child: Text('Save to Favorites'),
+              child: Text('Add to Shopping List'),
             ),
           ],
         ),

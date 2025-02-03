@@ -5,10 +5,17 @@ import 'screens/search_screen.dart';
 import 'screens/menu_plan_screen.dart';
 import 'screens/cart_screen.dart';
 import 'screens/recipe_details_screen.dart';
-import 'models/recipe.dart';
+import 'providers/cart_provider.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => CartProvider()),
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
