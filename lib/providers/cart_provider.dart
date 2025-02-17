@@ -41,22 +41,23 @@ class CartProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // Remove an ingredient from a specific recipe in the cart (not affecting the original recipe)
-  void removeIngredientFromCart(Recipe recipe, String ingredient) {
-    // Find the recipe in the cart
+  void removeIngredientFromCart(Recipe recipe, String ingredientName) {
     int recipeIndex = _recipesInCart.indexOf(recipe);
 
     if (recipeIndex != -1) {
-      // Remove the ingredient from the cart's recipe copy
-      _recipesInCart[recipeIndex].ingredients.remove(ingredient);
+      // Remove the ingredient by matching the 'name' key in the map
+      _recipesInCart[recipeIndex].ingredients.removeWhere(
+            (ingredient) => ingredient['name'] == ingredientName,
+      );
 
-      // If the recipe has no ingredients left, remove it from the cart
+      // If no ingredients are left, remove the recipe from the cart
       if (_recipesInCart[recipeIndex].ingredients.isEmpty) {
         removeFromCart(recipe);
       }
       notifyListeners();
     }
   }
+
 
   // Clear the entire cart (remove all recipes)
   void clearCart() {

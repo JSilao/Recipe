@@ -8,190 +8,141 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<Recipe> filteredRecipes = [];
-  List<Recipe> quickAndEasyRecipes = [];
-  String selectedMealType = 'all'; // Added state for selected meal type
+  List<Recipe> allRecipes = [];
 
   @override
   void initState() {
     super.initState();
-    quickAndEasyRecipes = recipes.where((recipe) => recipe.cookingTime < 10).toList();
-    filteredRecipes = recipes; // Default display all quick and easy recipes
-  }
-
-  // Filter recipes by meal type (Breakfast, Lunch, Dinner, etc.)
-  void filterByMealType(String mealType) {
-    setState(() {
-      selectedMealType = mealType;
-      if (mealType == 'all') {
-        filteredRecipes = recipes; // Show all quick and easy recipes
-      } else {
-        filteredRecipes = recipes.where((recipe) => recipe.mealType == mealType).toList();
-      }
-    });
+    allRecipes = recipes; // Display all recipes
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('WELCOME'),
+        title: Row(
+          children: [
+            Icon(Icons.home, color: Colors.white), // Home icon added
+            SizedBox(width: 8), // Spacing between icon and text
+            Text('Home', style: TextStyle(color: Colors.white)),
+          ],
+        ),
+        backgroundColor: Colors.green,
       ),
-      body: SingleChildScrollView(
+      body: SafeArea(
         child: Column(
           children: [
-            // Quick & Easy Carousel Section
+            // Welcome Banner
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
+              decoration: BoxDecoration(
+                color: Colors.green.shade600,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              margin: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              child: Text(
+                'Welcome to FoodCare!',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+
+            // Title
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
-              child: Column(
-                children: [
-                  Text(
-                    'Quick & Easy Recipes',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 16),
-                  CarouselSlider.builder(
-                    itemCount: quickAndEasyRecipes.length,
-                    itemBuilder: (context, index, realIndex) {
-                      final recipe = quickAndEasyRecipes[index];
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.pushNamed(
-                            context,
-                            '/recipeDetails',
-                            arguments: recipe.id,
-                          );
-                        },
-                        child: Card(
-                          elevation: 5.0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(15),
-                                  topRight: Radius.circular(15),
-                                ),
-                                child: Image.network(
-                                  recipe.imageUrl,
-                                  fit: BoxFit.cover,
-                                  height: 150,
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  recipe.title,
-                                  style: TextStyle(
-                                    fontSize: 25,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+              padding: const EdgeInsets.symmetric(vertical: 12.0),
+              child: Text(
+                'Quick & Easy Recipes',
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.green.shade800,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+
+            // Prevent overflow by wrapping in a constrained container
+            SizedBox(
+              height: 340, // Prevents vertical overflow
+              width: MediaQuery.of(context).size.width, // Prevents horizontal overflow
+              child: CarouselSlider.builder(
+                itemCount: allRecipes.length,
+                itemBuilder: (context, index, realIndex) {
+                  final recipe = allRecipes[index];
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(
+                        context,
+                        '/recipeDetails',
+                        arguments: recipe.id,
                       );
                     },
-                    options: CarouselOptions(
-                      height: 250,
-                      enlargeCenterPage: true,
-                      autoPlay: true,
-                      aspectRatio: 16 / 9,
-                      viewportFraction: 0.8,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // Meal Type Filter Section
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  ElevatedButton(
-                    onPressed: () => filterByMealType('breakfast'),
-                    child: Text('Breakfast'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: selectedMealType == 'breakfast' ? Colors.blue : Colors.grey, // Blue when selected
-                      foregroundColor: selectedMealType == 'breakfast' ? Colors.white : Colors.black, // White font when selected
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () => filterByMealType('lunch'),
-                    child: Text('Lunch'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: selectedMealType == 'lunch' ? Colors.blue : Colors.grey, // Blue when selected
-                      foregroundColor: selectedMealType == 'lunch' ? Colors.white : Colors.black, // White font when selected
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () => filterByMealType('dinner'),
-                    child: Text('Dinner'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: selectedMealType == 'dinner' ? Colors.blue : Colors.grey, // Blue when selected
-                      foregroundColor: selectedMealType == 'dinner' ? Colors.white : Colors.black, // White font when selected
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // Display filtered recipes horizontally as images
-            filteredRecipes.isEmpty
-                ? Center(child: Text('No recipes found for this meal type.'))
-                : Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: filteredRecipes.map((recipe) {
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(
-                          context,
-                          '/recipeDetails',
-                          arguments: recipe.id,
-                        );
-                      },
-                      child: Container(
-                        margin: EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.85, // Ensures no side overflow
+                      child: Card(
+                        elevation: 4.0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        color: Colors.green.shade50,
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(12),
+                                topRight: Radius.circular(12),
+                              ),
                               child: Image.network(
                                 recipe.imageUrl,
-                                width: 100,
-                                height: 100,
                                 fit: BoxFit.cover,
+                                height: 200,
                               ),
                             ),
-                            SizedBox(height: 8),
-                            Text(
-                              recipe.title,
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    recipe.title,
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.green.shade800,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  SizedBox(height: 4),
+                                  Text(
+                                    '${recipe.cookingTime} mins | ${recipe.mealType}',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.grey[700],
+                                    ),
+                                  ),
+                                ],
                               ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
                             ),
                           ],
                         ),
                       ),
-                    );
-                  }).toList(),
+                    ),
+                  );
+                },
+                options: CarouselOptions(
+                  height: 320,
+                  enlargeCenterPage: true,
+                  autoPlay: true,
+                  viewportFraction: 0.85, // Fix for side overflow
+                  disableCenter: true, // Ensures correct alignment
                 ),
               ),
             ),

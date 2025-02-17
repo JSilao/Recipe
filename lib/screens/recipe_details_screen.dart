@@ -68,7 +68,7 @@ class RecipeDetailsScreen extends StatelessWidget {
 
               // Ingredients List
               _buildSectionTitle('Ingredients'),
-              _buildListView(recipe.ingredients),
+              _buildListView(recipe.ingredients), // ✅ Fix applied
 
               SizedBox(height: 20),
 
@@ -143,8 +143,8 @@ class RecipeDetailsScreen extends StatelessWidget {
     );
   }
 
-  // Helper method to build list view of ingredients
-  Widget _buildListView(List<String> items) {
+  // ✅ Updated `_buildListView` function
+  Widget _buildListView(List<Map<String, String>> ingredients) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
@@ -154,11 +154,11 @@ class RecipeDetailsScreen extends StatelessWidget {
         padding: const EdgeInsets.all(12.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: items.map((item) {
+          children: ingredients.map((ingredient) {
             return Padding(
               padding: const EdgeInsets.symmetric(vertical: 4.0),
               child: Text(
-                '• $item',
+                '• ${ingredient['name']} - ${ingredient['measurement']}',
                 style: TextStyle(fontSize: 18),
               ),
             );

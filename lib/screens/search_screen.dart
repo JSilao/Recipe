@@ -25,7 +25,9 @@ class _SearchScreenState extends State<SearchScreen> {
     if (_controller.text.isNotEmpty) {
       filtered = filtered.where((recipe) {
         return recipe.title.toLowerCase().contains(_controller.text.toLowerCase()) ||
-            recipe.ingredients.any((ingredient) => ingredient.toLowerCase().contains(_controller.text.toLowerCase()));
+            recipe.ingredients.any((ingredient) =>
+                ingredient['name']!.toLowerCase().contains(_controller.text.toLowerCase())
+            );
       }).toList();
     }
 
@@ -75,6 +77,21 @@ class _SearchScreenState extends State<SearchScreen> {
       }).toList();
     });
   }
+  Widget _buildFilterChip(String label, String filterType) {
+    return FilterChip(
+      label: Text(
+        label,
+        style: TextStyle(fontSize: 14), // Consistent font size
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20), // Soft rounded edges
+      ),
+      backgroundColor: Colors.blue[100], // Light background
+      onSelected: (bool selected) {}, // Prevents toggling
+      onDeleted: () => _clearFilter(filterType),
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -106,71 +123,29 @@ class _SearchScreenState extends State<SearchScreen> {
         children: <Widget>[
           // Display selected filters
           Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Wrap(
-              spacing: 8.0,
-              children: [
-                if (_selectedMealType.isNotEmpty)
-                  FilterChip(
-                    label: Text('Meal: $_selectedMealType'),
-                    onSelected: (bool selected) {
-                      // Prevent toggling by setting it false.
-                    },
-                    onDeleted: () {
-                      _clearFilter('mealType');
-                    },
-                  ),
-                if (_selectedMeat.isNotEmpty)
-                  FilterChip(
-                    label: Text('Meat: $_selectedMeat'),
-                    onSelected: (bool selected) {
-                      // Prevent toggling by setting it false.
-                    },
-                    onDeleted: () {
-                      _clearFilter('meatType');
-                    },
-                  ),
-                if (_selectedHealth.isNotEmpty)
-                  FilterChip(
-                    label: Text('Dietary: ${_selectedHealth.join(', ')}'),
-                    onSelected: (bool selected) {
-                      // Prevent toggling by setting it false.
-                    },
-                    onDeleted: () {
-                      _clearFilter('dietary');
-                    },
-                  ),
-                if (_selectedTags.isNotEmpty)
-                  FilterChip(
-                    label: Text('Tags: ${_selectedTags.join(', ')}'),
-                    onSelected: (bool selected) {
-                      // Prevent toggling by setting it false.
-                    },
-                    onDeleted: () {
-                      _clearFilter('tags');
-                    },
-                  ),
-                if (_selectedMaxPreparationTime != null)
-                  FilterChip(
-                    label: Text('Max Prep Time: $_selectedMaxPreparationTime'),
-                    onSelected: (bool selected) {
-                      // Prevent toggling by setting it false.
-                    },
-                    onDeleted: () {
-                      _clearFilter('preparationTime');
-                    },
-                  ),
-                if (_selectedMaxCookingTime != null)
-                  FilterChip(
-                    label: Text('Max Cook Time: $_selectedMaxCookingTime'),
-                    onSelected: (bool selected) {
-                      // Prevent toggling by setting it false.
-                    },
-                    onDeleted: () {
-                      _clearFilter('cookingTime');
-                    },
-                  ),
-              ],
+            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+            child: SizedBox(
+              width: double.infinity, // Ensures full width
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start, // Align to the left
+                children: [
+                  if (_selectedMealType.isNotEmpty)
+                    _buildFilterChip('Meal: $_selectedMealType', 'mealType'),
+                  if (_selectedMeat.isNotEmpty)
+                    _buildFilterChip('Meat: $_selectedMeat', 'meatType'),
+                  if (_selectedHealth.isNotEmpty)
+                    _buildFilterChip('Dietary: ${_selectedHealth.join(', ')}', 'dietary'),
+                  if (_selectedTags.isNotEmpty)
+                    _buildFilterChip('Tags: ${_selectedTags.join(', ')}', 'tags'),
+                  if (_selectedMaxPreparationTime != null)
+                    _buildFilterChip('Max Prep Time: $_selectedMaxPreparationTime', 'preparationTime'),
+                  if (_selectedMaxCookingTime != null)
+                    _buildFilterChip('Max Cook Time: $_selectedMaxCookingTime', 'cookingTime'),
+                ].map((widget) => Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4.0), // Space between chips
+                  child: widget,
+                )).toList(),
+              ),
             ),
           ),
 

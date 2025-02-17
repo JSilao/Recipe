@@ -56,7 +56,6 @@ class _FilterDialogState extends State<FilterDialog> {
   }
 
   List<String> _getUniqueDietary() {
-    // Flatten and ensure the result is a List<String>
     return recipes.expand((r) => r.dietary).toSet().toList().cast<String>();
   }
 
@@ -74,88 +73,80 @@ class _FilterDialogState extends State<FilterDialog> {
           children: [
             // Filter by Meal Type
             Text('Meal Type', style: TextStyle(fontWeight: FontWeight.bold)),
-            Wrap(
-              alignment: WrapAlignment.center, // Centers the chips
-              spacing: 4.0, // Decreases spacing between chips
-              children: _availableMealTypes.map((mealType) {
-                return ChoiceChip(
-                  label: Text(mealType),
-                  selected: _mealTypes.contains(mealType),
-                  onSelected: (selected) {
-                    setState(() {
-                      if (selected) {
-                        _mealTypes.add(mealType);
-                      } else {
-                        _mealTypes.remove(mealType);
-                      }
-                    });
-                  },
+            DropdownButton<String>(
+              value: _mealTypes.isNotEmpty ? _mealTypes.first : null,
+              hint: Text("Select Meal Type"),
+              onChanged: (value) {
+                setState(() {
+                  if (value != null) {
+                    _mealTypes = [value]; // Replace the selected value
+                  }
+                });
+              },
+              items: _availableMealTypes.map((mealType) {
+                return DropdownMenuItem<String>(
+                  value: mealType,
+                  child: Text(mealType),
                 );
               }).toList(),
             ),
 
             // Filter by Meat Type
             Text('Meat Type', style: TextStyle(fontWeight: FontWeight.bold)),
-            Wrap(
-              alignment: WrapAlignment.center, // Centers the chips
-              spacing: 4.0, // Decreases spacing between chips
-              children: _availableMeatTypes.map((meatType) {
-                return ChoiceChip(
-                  label: Text(meatType),
-                  selected: _meatTypes.contains(meatType),
-                  onSelected: (selected) {
-                    setState(() {
-                      if (selected) {
-                        _meatTypes.add(meatType);
-                      } else {
-                        _meatTypes.remove(meatType);
-                      }
-                    });
-                  },
+            DropdownButton<String>(
+              value: _meatTypes.isNotEmpty ? _meatTypes.first : null,
+              hint: Text("Select Meat Type"),
+              onChanged: (value) {
+                setState(() {
+                  if (value != null) {
+                    _meatTypes = [value]; // Replace the selected value
+                  }
+                });
+              },
+              items: _availableMeatTypes.map((meatType) {
+                return DropdownMenuItem<String>(
+                  value: meatType,
+                  child: Text(meatType),
                 );
               }).toList(),
             ),
 
             // Filter by Dietary Preferences
             Text('Dietary', style: TextStyle(fontWeight: FontWeight.bold)),
-            Wrap(
-              alignment: WrapAlignment.center, // Centers the chips
-              spacing: 4.0, // Decreases spacing between chips
-              children: _availableDietaryPreferences.map((diet) {
-                return ChoiceChip(
-                  label: Text(diet),
-                  selected: _dietaryPreferences.contains(diet),
-                  onSelected: (selected) {
-                    setState(() {
-                      if (selected) {
-                        _dietaryPreferences.add(diet);
-                      } else {
-                        _dietaryPreferences.remove(diet);
-                      }
-                    });
-                  },
+            DropdownButton<String>(
+              value: _dietaryPreferences.isNotEmpty ? _dietaryPreferences.first : null,
+              hint: Text("Select Dietary Preference"),
+              onChanged: (value) {
+                setState(() {
+                  if (value != null) {
+                    _dietaryPreferences = [value]; // Replace the selected value
+                  }
+                });
+              },
+              items: _availableDietaryPreferences.map((diet) {
+                return DropdownMenuItem<String>(
+                  value: diet,
+                  child: Text(diet),
                 );
               }).toList(),
             ),
 
             // Filter by Tags
             Text('Tags', style: TextStyle(fontWeight: FontWeight.bold)),
-            Wrap(
-              alignment: WrapAlignment.center, // Centers the chips
-              spacing: 4.0, // Decreases spacing between chips
-              children: _availableTags.map((tag) {
-                return ChoiceChip(
-                  label: Text(tag),
-                  selected: _tags.contains(tag),
-                  onSelected: (selected) {
-                    setState(() {
-                      if (selected) {
-                        _tags.add(tag);
-                      } else {
-                        _tags.remove(tag);
-                      }
-                    });
-                  },
+            DropdownButton<String>(
+              value: _tags.isNotEmpty ? _tags.first : null,
+              hint: Text("Select Tag"),
+              onChanged: (value) {
+                setState(() {
+                  if (value != null) {
+                    _tags = [value]; // Replace the selected value
+                  }
+                });
+              },
+              items: _availableTags.map((tag) {
+                return DropdownMenuItem<String>(
+                  value: tag,
+                  child: Text(tag),
                 );
               }).toList(),
             ),

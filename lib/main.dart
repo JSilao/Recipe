@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'screens/landing_page.dart';
 import 'screens/home_screen.dart';
 import 'screens/search_screen.dart';
 import 'screens/menu_plan_screen.dart';
 import 'screens/cart_screen.dart';
 import 'screens/recipe_details_screen.dart';
 import 'providers/cart_provider.dart';
+
 
 void main() {
   runApp(
@@ -66,9 +68,10 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      initialRoute: '/homeTabs',
+      initialRoute: '/landing',  // Instead of '/homeTabs'
       routes: {
-        '/homeTabs': (context) => HomeTabs(),
+        '/landing': (context) => LandingPage(),
+        '/homeTabs': (context) => const HomeTabs(),
         '/recipeDetails': (context) => RecipeDetailsScreen(),
       },
     );
@@ -76,9 +79,12 @@ class MyApp extends StatelessWidget {
 }
 
 class HomeTabs extends StatefulWidget {
+  const HomeTabs({Key? key}) : super(key: key);
+
   @override
   _HomeTabsState createState() => _HomeTabsState();
 }
+
 
 class _HomeTabsState extends State<HomeTabs> {
   int _selectedIndex = 0;
